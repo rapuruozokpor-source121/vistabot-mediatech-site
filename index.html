@@ -1,54 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vistabot MediaTech</title>
   <style>
     * {
       box-sizing: border-box;
     }
-    <script>
-  const vbUrl = "https://vistabot-chat.rapuruozokpor-404.workers.dev";
-  const msgs = document.getElementById("vb-msgs");
-  const input = document.getElementById("vb-input");
-  function add(who, text) {
-    msgs.innerHTML += `<p><b>${who}:</b> ${text}</p>`;
-    msgs.scrollTop = msgs.scrollHeight;
-  }
-  async function send() {
-    const text = input.value.trim();
-    if (!text) return;
-    add("You", text);
-    input.value = "";
-    try {
-      const res = await fetch(vbUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text })
-      });
-      const data = await res.json();
-      add("Vistabot", data.reply);
-    } catch (e) {
-      add("Vistabot", "Sorry, I can't connect right now.");
-    }
-  }
-  document.getElementById("vb-send").onclick = send;
-  input.addEventListener("keydown", e => { if (e.key === "Enter") send(); });
-</script>
-<body>
-  <h1>Vistabot MediaTech</h1>
-  <p>AI chatbots, video editing, and ad creative for local businesses.</p>
-
-  <div id="vb-chat" style="position:fixed;bottom:20px;right:20px;width:300px;background:#fff;border:1px solid #ccc;border-radius:10px;font-family:sans-serif;box-shadow:0 4px 12px rgba(0,0,0,.2)">
-    <div style="background:#1a73e8;color:#fff;padding:10px;border-radius:10px 10px 0 0">Chat with Vistabot</div>
-    <div id="vb-msgs" style="height:250px;overflow-y:auto;padding:10px;font-size:14px"></div>
-    <div style="display:flex;border-top:1px solid #ccc">
-      <input id="vb-input" placeholder="Type a message..." style="flex:1;border:none;padding:10px;outline:none">
-      <button id="vb-send" style="border:none;background:#1a73e8;color:#fff;padding:0 15px;border-radius:0 0 10px 0">Send</button>
-    </div>
-  </div>
-
-  <script>
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
       background-color: #f9f9f9;
@@ -145,6 +104,55 @@
       color: white;
       margin-top: 40px;
     }
+
+    /* Chatbot */
+    #vb-chat {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 300px;
+      max-width: calc(100% - 40px);
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,.2);
+      z-index: 9999;
+    }
+    #vb-head {
+      background: #2c3e50;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 10px 10px 0 0;
+      font-weight: bold;
+    }
+    #vb-msgs {
+      height: 250px;
+      overflow-y: auto;
+      padding: 10px;
+    }
+    #vb-msgs p {
+      font-size: 14px;
+      margin: 0 0 8px 0;
+    }
+    #vb-row {
+      display: flex;
+      border-top: 1px solid #ccc;
+    }
+    #vb-input {
+      flex: 1;
+      border: none;
+      padding: 10px;
+      outline: none;
+      font-size: 14px;
+    }
+    #vb-send {
+      border: none;
+      background: #2c3e50;
+      color: #fff;
+      padding: 0 15px;
+      border-radius: 0 0 10px 0;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -156,7 +164,7 @@
 
   <section id="about">
     <h2>About</h2>
-      <img src="rapuru_profile.jpg" alt="Rapuru - Founder of Vistabot MediaTech" class="profile-photo">
+    <img src="rapuru_profile.jpg" alt="Rapuru - Founder of Vistabot MediaTech" class="profile-photo">
     <p>I help businesses create engaging video content, run effective ad campaigns, and set up AI chatbots to grow and support their customer base.</p>
     <div class="about-clear"></div>
   </section>
@@ -218,6 +226,53 @@
   <footer>
     <p>&copy; 2026 Vistabot MediaTech. All rights reserved.</p>
   </footer>
+
+  <!-- Chatbot -->
+  <div id="vb-chat">
+    <div id="vb-head">Chat with Vistabot</div>
+    <div id="vb-msgs"></div>
+    <div id="vb-row">
+      <input id="vb-input" placeholder="Type a message...">
+      <button id="vb-send">Send</button>
+    </div>
+  </div>
+
+  <script>
+    const vbUrl = "https://vistabot-chat.rapuruozokpor-404.workers.dev";
+    const vbMsgs = document.getElementById("vb-msgs");
+    const vbInput = document.getElementById("vb-input");
+
+    function vbAdd(who, text) {
+      const p = document.createElement("p");
+      const b = document.createElement("b");
+      b.textContent = who + ": ";
+      p.appendChild(b);
+      p.appendChild(document.createTextNode(text));
+      vbMsgs.appendChild(p);
+      vbMsgs.scrollTop = vbMsgs.scrollHeight;
+    }
+
+    async function vbSend() {
+      const text = vbInput.value.trim();
+      if (!text) return;
+      vbAdd("You", text);
+      vbInput.value = "";
+      try {
+        const res = await fetch(vbUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: text })
+        });
+        const data = await res.json();
+        vbAdd("Vistabot", data.reply);
+      } catch (e) {
+        vbAdd("Vistabot", "Sorry, I can't connect right now.");
+      }
+    }
+
+    document.getElementById("vb-send").onclick = vbSend;
+    vbInput.addEventListener("keydown", e => { if (e.key === "Enter") vbSend(); });
+  </script>
 
 </body>
 </html>
